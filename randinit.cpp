@@ -57,10 +57,10 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[])
     int aew = cols- patch_w+1, aeh = rows - patch_w + 1,  aez= slices - patch_w +1;    /* Effective width and height (possible upper left corners of patches). */
     
     const mwSize dim_offsets[4]= {N[0],N[1],N[2], 4};
-    plhs[0]= mxCreateNumericMatrix(0, 0,mxSINGLE_CLASS, mxREAL); /* Create an empty array */    
+    plhs[0]= mxCreateNumericMatrix(0, 0,mxINT32_CLASS, mxREAL); /* Create an empty array */    
     mxSetDimensions(plhs[0],(const mwSize *)dim_offsets, 4); /* Set the dimensions to N[0] x ... x N[K?1] */
-    mxSetData(plhs[0], mxMalloc(sizeof(float)*(N[0]*N[1]*N[2]*4))); /* Allocate memory */
-    float *offsets=(float *) mxGetData(plhs[0]);
+    mxSetData(plhs[0], mxMalloc(sizeof(int)*(N[0]*N[1]*N[2]*4))); /* Allocate memory */
+    int *offsets=(int *) mxGetData(plhs[0]);
     
     plhs[1]= mxCreateNumericMatrix(0, 0,mxSINGLE_CLASS, mxREAL); /* Create an empty array */    
     mxSetDimensions(plhs[1], (const mwSize *)N, 3); /* Set the dimensions to N[0] x ... x N[K?1] */
@@ -79,10 +79,24 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[])
         {
             for(int ac= 0; ac < aew; ac++)
             {
+                
+                
+                //rand() % (HIGH - LOW + 1) + LOW;
+                b_pos[0] = rand()%(MIN(ar+wsearch,aeh-1)-MAX(ar-wsearch,0)+1)+MAX(ar-wsearch,0);
+                b_pos[1] = rand()%(MIN(ac+wsearch,aew-1)-MAX(ac-wsearch,0)+1)+MAX(ac-wsearch,0);
+                b_pos[2] = rand()%(MIN(az+wsearch,aez-1)-MAX(az-wsearch,0)+1)+MAX(az-wsearch,0);
+                b_pos[3]= rand()%objects;
+                
+                
+                /*irnd=randi([max(i-w,1+w1) min(i+w,m-w1)]);
+                jrnd=randi([max(j-w,1+w1) min(j+w,n-w1)]);
+                krnd=randi([max(k-w,1+w1) min(k+w,l-w1)]);
+                trnd=randi(bsz1);
+                
                 b_pos[0] = rand()%aeh;
                 b_pos[1]= rand()%aew;
                 b_pos[2]= rand()%aez;
-                b_pos[3]= rand()%objects;
+                b_pos[3]= rand()%objects;*/
                 
                 for(int i=0;i<4;i++)
                 {

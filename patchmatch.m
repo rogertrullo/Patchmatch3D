@@ -1,4 +1,4 @@
-function [offsets,distances]=patchmatch(A,B,halfwinsize)
+function [offsets,distances]=patchmatch(A,B,wsearch,patch_w)
 
 %patchmatch Implementation by Roger Trullo of the original paper of Barnes
 %   A refers to the original image
@@ -9,7 +9,7 @@ function [offsets,distances]=patchmatch(A,B,halfwinsize)
 %Random Initialization
 A=double(A);
 B=double(B);
-[offsets,distances] = InitRand(A,B,halfwinsize);
+[offsets,distances] = randinit(A,B,wsearch,patch_w);
 Apadded=padarray(A,[halfwinsize,halfwinsize]);
 
 alpha=0.5;

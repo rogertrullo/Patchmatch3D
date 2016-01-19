@@ -21,27 +21,37 @@ fprintf('0%%----------100%%\n >'); % ten %s.
 dispProgress = false((l-2*w1)*(m-2*w1)*(n-2*w1),1);
 dispInterval = floor((l-2*w1)*(m-2*w1)*(n-2*w1)/10);
 dispProgress(dispInterval:dispInterval:end) = true;
-for k=1+w1:l-w1
+tic
+myCluster=parcluster('local'); 
+myCluster.NumWorkers=8
+parpool(myCluster,8)
+bsz1=bsz(4);
+parfor k=1+w1:l-w1
     for i=1+w1:m-w1
         for j=1+w1:n-w1
             irnd=randi([max(i-w,1+w1) min(i+w,m-w1)]);
             jrnd=randi([max(j-w,1+w1) min(j+w,n-w1)]);
             krnd=randi([max(k-w,1+w1) min(k+w,l-w1)]);
-            trnd=randi(bsz(4));
+            trnd=randi(bsz1);
             
             offsets(i,j,k,:)=[irnd jrnd krnd trnd];
-            distances(i,j,k)=sumsqr(reshape(A(i-w1:i+w1,j-w1:j+w1,k-w1:k+w1),[],1)-...
-            reshape(B(offsets(i,j,k,1)-w1:offsets(i,j,k,1)+w1,offsets(i,j,k,2)-w1:offsets(i,j,k,2)+w1,...
-            offsets(i,j,k,3)-w1:offsets(i,j,k,3)+w1,offsets(i,j,k,4)),[],1));
+            %distances(i,j,k)=sumsqr(reshape(A(i-w1:i+w1,j-w1:j+w1,k-w1:k+w1),[],1)-...
+            %reshape(B(offsets(i,j,k,1)-w1:offsets(i,j,k,1)+w1,offsets(i,j,k,2)-w1:offsets(i,j,k,2)+w1,...
+            %offsets(i,j,k,3)-w1:offsets(i,j,k,3)+w1,offsets(i,j,k,4)),[],1));
             
-            if dispProgress((k-1-w1)*(m-2*w1)*(n-2*w1)+(i-1-w1)*(m-2*w)+j); fprintf('='); end
+            
+            distances(i,j,k)=sumsqr(reshape(A(i-w1:i+w1,j-w1:j+w1,k-w1:k+w1),[],1)-...
+            reshape(B(irnd-w1:irnd+w1,jrnd-w1:jrnd+w1,...
+            krnd-w1:krnd+w1,trnd),[],1));
+            
+            %if dispProgress((k-1-w1)*(m-2*w1)*(n-2*w1)+(i-1-w1)*(m-2*w)+j); fprintf('='); end
             
         end
         
     end
-    disp(k)
+    %disp(k)
 end
 
-
+toc
 end
 
