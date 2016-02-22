@@ -1,4 +1,4 @@
-function [A,B] = loadvolumes(k,prefix,idx,ext,path1)
+function [B] = loadvolumes_complete(k,prefix,ext,path1)
     %need the toolbox of Dirk for readinig mha files and niftit toolbox for
     %nii files
     %A image original
@@ -13,29 +13,10 @@ function [A,B] = loadvolumes(k,prefix,idx,ext,path1)
     
     
     name=strcat(path1,prefix);
-    tmp=sprintf(strcat(name,'%02d','.',ext),idx);
-    
-    if ~exist(tmp, 'file')
-      % File doesnt exist ....
-      error('\nfile does not exist:\n%s', tmp);
-    end
-    if strcmp(ext,'mha')
-        A=ReadData3D(tmp,false);
-        
-    elseif strcmp(ext,'nii.gz')
-        tmpA=load_nii(tmp);
-        A=tmpA.img;
-    else
-        error('extension %s not supported',ext)
-    end
-    %A=A(pad+1:size(A,1)-pad,pad+1:size(A,2)-pad,pad+1:size(A,3)-pad);
-    idxtmp=idx+1;
+    idxtmp=[];
+  
     for i=1:k
-      %t = getCurrentTask();
-      %disp(t.ID);
-        if i==idx+1
-            continue
-        end
+
         tmp=sprintf(strcat(name,'%02d','.',ext),i-1);
         if ~exist(tmp, 'file')
       % File exists.  Do stuff....
