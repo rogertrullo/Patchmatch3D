@@ -1,4 +1,5 @@
 #include <string.h>
+#include <stdlib.h> 
 #include "mex.h"
 
 #ifndef MAX
@@ -46,7 +47,7 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[])
     int wsearch= mxGetScalar(prhs[2]);
     int patch_w= mxGetScalar(prhs[3]);   
     
-    mexPrintf("wsearc: %d ", wsearch);
+    mexPrintf("\nwsearc: %d ", wsearch);
     mexPrintf("\nwpatch: %d ", patch_w);
 
     
@@ -55,26 +56,31 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[])
     int slices=N[2];
     int objects=N[3];
     int aew = cols- patch_w+1, aeh = rows - patch_w + 1,  aez= slices - patch_w +1;    /* Effective width and height (possible upper left corners of patches). */
-    
+    mexPrintf("\nobjects: %d ", objects);
     const mwSize dim_offsets[4]= {N[0],N[1],N[2], 4};
     plhs[0]= mxCreateNumericMatrix(0, 0,mxINT32_CLASS, mxREAL); /* Create an empty array */    
     mxSetDimensions(plhs[0],(const mwSize *)dim_offsets, 4); /* Set the dimensions to N[0] x ... x N[K?1] */
     mxSetData(plhs[0], mxMalloc(sizeof(int)*(N[0]*N[1]*N[2]*4))); /* Allocate memory */
     int *offsets=(int *) mxGetData(plhs[0]);
+    memset(offsets,0,sizeof(int)*(N[0]*N[1]*N[2]*4));
     
     plhs[1]= mxCreateNumericMatrix(0, 0,mxSINGLE_CLASS, mxREAL); /* Create an empty array */    
     mxSetDimensions(plhs[1], (const mwSize *)N, 3); /* Set the dimensions to N[0] x ... x N[K?1] */
     mxSetData(plhs[1], mxMalloc(sizeof(float)*(N[0]*N[1]*N[2]))); /* Allocate memory */
     float *distances=(float *) mxGetData(plhs[1]);
+    memset(distances,10000000,sizeof(int)*(N[0]*N[1]*N[2]));
+
     mexPrintf("\naew=%d ",aew);
     mexPrintf("\naeh=%d",aeh);
     mexPrintf("\naez=%d",aez);
     
-    int b_pos[4];//0-> row,1->col, 2->slice,3->index in library
+    int b_pos[4]={0,0,0,0};//0-> row,1->col, 2->slice,3->index in library
     
    
     for (int az = 0; az < aez; az++)
-    {
+    {	
+
+	
         for (int ar = 0; ar < aeh; ar++)
         {
             for(int ac= 0; ac < aew; ac++)

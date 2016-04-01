@@ -5,16 +5,16 @@ clc
 close all
 
 rutesave='C:/Users/Roger Trullo/Documents/dataset/outlabel.nii.gz';
-rute='C:/Users/Roger Trullo/Documents/dataset/prostate/3T_registered/';
-rutelabels='C:/Users/Roger Trullo/Documents/dataset/prostate/labels_3T_registered/';
-num_lib=30;
+rute='/media/roger/48BCFC2BBCFC1562/dataset/prostate/3T_registered/';
+rutelabels='/media/roger/48BCFC2BBCFC1562/dataset/prostate/labels_3T_registered/';
+num_lib=9;
 pad=20;
 prefix='Warped';
 prefixlabels='labelwarped';
 wsearch=3;
 wpatch=4;
 
-K=5;
+K=3;
 %%
 
 [A,B] = loadvolumes(num_lib,prefix,0,'nii.gz',rute);
@@ -42,6 +42,10 @@ sza=size(A);
 for i=1:K
     
     [offsetst,distancest]=randinit(A,B,wsearch,wpatch);%A,b MUST be float(singles)
+    disp('min')
+    min(min(min(offsetst)))
+    disp('max')
+    max(max(max(offsetst)))
     [offsets,distances]=patchmatch3d(A,B,offsetst,distancest,wsearch,wpatch);
     array_off(:,:,:,:,i)=offsets+1;
     array_dis(:,:,:,i)=distances;

@@ -29,6 +29,9 @@ function [B] = loadvolumes_complete(k,prefix,ext,path1)
             elseif strcmp(ext,'nii.gz')
                 tmpB=load_nii(tmp);
                 B_t=tmpB.img;
+            elseif strcmp(ext,'nrrd')
+                [B_t,~]=nrrdread(tmp);
+                
             
             end  
             B(:,:,:,i)=B_t;
